@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RPay Agentic Commerce — Automated Pitch Video</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0A0F1D;
+            --bg-card: #131D31;
+            --accent-blue: #38BDF8;
+            --accent-teal: #2DD4BF;
+            --accent-green: #34D399;
+            --accent-red: #F87171;
+            --text-main: #F8FAFC;
+            --text-muted: #94A3B8;
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        /* Top Progress & Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 32px;
+            background: rgba(19, 29, 49, 0.8);
+            border-bottom: 1px solid var(--border);
+            backdrop-filter: blur(10px);
+        }
+
+        .brand-badge {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .brand-tag {
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-teal));
+            color: #0A0F1D;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+        .timeline-tracker {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .track-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            transition: all 0.3s ease;
+        }
+
+        .track-dot.active {
+            background: var(--accent-blue);
+            box-shadow: 0 0 10px var(--accent-blue);
+            transform: scale(1.3);
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 4px;
+            background: rgba(255,255,255,0.1);
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--accent-blue), var(--accent-teal));
+            transition: width 0.1s linear;
+        }
+
+        /* Slide Viewport */
+        .viewport {
+            flex: 1;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+        }
+
+        .slide {
+            display: none;
+            width: 100%;
+            max-width: 1200px;
+            height: 100%;
+            flex-direction: column;
+            justify-content: center;
+            animation: fadeIn 0.6s ease;
+        }
+
+        .slide.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .slide-tag {
+            font-size: 14px;
+            color: var(--accent-teal);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 8px;
+        }
+
+        .slide-title {
+            font-size: 42px;
+            font-weight: 800;
+            margin-bottom: 24px;
+            background: linear-gradient(135deg, #FFFFFF 0%, #CBD5E1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 32px;
+            align-items: center;
+        }
+
+        .card-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+        }
+
+        .code-snippet {
+            font-family: 'Fira Code', monospace;
+            font-size: 13px;
+            line-height: 1.6;
+            background: #0B1120;
+            border-radius: 10px;
+            padding: 16px;
+            color: #E2E8F0;
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            max-height: 380px;
+            overflow-y: auto;
+        }
+
+        .code-keyword { color: #F472B6; font-weight: bold; }
+        .code-func { color: #38BDF8; font-weight: bold; }
+        .code-str { color: #A7F3D0; }
+        .code-comment { color: #64748B; font-style: italic; }
+
+        .feature-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            font-size: 16px;
+            line-height: 1.5;
+            color: #CBD5E1;
+        }
+
+        .feature-icon {
+            font-size: 20px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        /* Controls Bottom Bar */
+        .controls {
+            padding: 18px 32px;
+            background: rgba(19, 29, 49, 0.9);
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn {
+            background: var(--accent-blue);
+            color: #0A0F1D;
+            border: none;
+            padding: 10px 22px;
+            font-size: 14px;
+            font-weight: 700;
+            border-radius: 8px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+            background: #7DD3FC;
+        }
+
+        .btn-secondary {
+            background: rgba(255,255,255,0.1);
+            color: #F8FAFC;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .teleprompter {
+            font-size: 14px;
+            color: var(--accent-teal);
+            font-weight: 500;
+            max-width: 600px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Header -->
+    <div class="header">
+        <div class="brand-badge">
+            <span class="brand-tag">RPAY DEMO</span>
+            <span>Agentic Commerce Video Pitch Deck</span>
+        </div>
+        <div class="timeline-tracker">
+            <div class="track-dot active" id="dot-0"></div>
+            <div class="track-dot" id="dot-1"></div>
+            <div class="track-dot" id="dot-2"></div>
+            <div class="track-dot" id="dot-3"></div>
+            <div class="track-dot" id="dot-4"></div>
+            <span id="time-display" style="font-size: 13px; color: var(--text-muted); margin-left: 10px;">0:00 / 4:30</span>
+        </div>
+    </div>
+
+    <!-- Live Progress Bar -->
+    <div class="progress-bar-container">
+        <div class="progress-bar" id="progress-bar"></div>
+    </div>
+
+    <!-- Slide Viewport -->
+    <div class="viewport">
+
+        <!-- Slide 1: Hook & Vision -->
+        <div class="slide active" id="slide-0">
+            <div class="slide-tag">Segment 1 • 0:00 - 0:45</div>
+            <h1 class="slide-title">Autonomous Voice-First Agentic Commerce</h1>
+            <div class="grid-2">
+                <div class="card-box">
+                    <ul class="feature-list">
+                        <li class="feature-item">
+                            <span class="feature-icon">🚀</span>
+                            <div><b>The Paradigm Shift:</b> Moving from passive web search to autonomous AI agents that discover, evaluate, and transact on users' behalf.</div>
+                        </li>
+                        <li class="feature-item">
+                            <span class="feature-icon">⚠️</span>
+                            <div><b>The Critical Challenge:</b> Preventing prompt injection, unverified merchant fraud, and runaway financial spending.</div>
+                        </li>
+                        <li class="feature-item">
+                            <span class="feature-icon">🛡️</span>
+                            <div><b>Our Solution:</b> Alexa-inspired conversational UI backed by deterministic security guardrails and Razorpay financial rails.</div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-box" style="text-align: center; padding: 40px 20px;">
+                    <div style="font-size: 64px; margin-bottom: 16px;">🎙️ ➔ 🤖 ➔ 💳</div>
+                    <h3 style="color: var(--accent-blue); margin-bottom: 8px;">Voice Intent to Instant Payment</h3>
+                    <p style="color: var(--text-muted); font-size: 14px;">Gated, Explainable & Cryptographically Audited</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 2: Alexa Voice UI & Semantic Reasoner -->
+        <div class="slide" id="slide-1">
+            <div class="slide-tag">Segment 2 • 0:45 - 1:45</div>
+            <h1 class="slide-title">Voice-First Experience & Semantic Intent Reasoner</h1>
+            <div class="grid-2">
+                <div class="card-box">
+                    <ul class="feature-list">
+                        <li class="feature-item">
+                            <span class="feature-icon">🎙️</span>
+                            <div><b>Browser-Native Speech API:</b> Hands-free voice commands with real-time Alexa orb animations (`listening`, `speaking`, `idle`).</div>
+                        </li>
+                        <li class="feature-item">
+                            <span class="feature-icon">🧠</span>
+                            <div><b>Semantic Intent Matching:</b> Understands complex prompts (e.g. <i>"kettle under 2000 rupees"</i>), extracting implicit budgets and matching descriptions.</div>
+                        </li>
+                        <li class="feature-item">
+                            <span class="feature-icon">💡</span>
+                            <div><b>Explainable AI Decisions:</b> Generates a transparent <i>"AI Pick Reason"</i> for every recommended product.</div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="code-snippet">
+<span class="code-comment"># Semantic Intent Reasoner from app.py</span>
+<span class="code-keyword">def</span> <span class="code-func">calculate_match_score</span>(product, intent_words):
+    name_matches = <span class="code-func">len</span>(intent_words & <span class="code-func">set</span>(product[<span class="code-str">"name"</span>].lower().split())) * <span class="code-keyword">3.0</span>
+    cat_matches  = <span class="code-func">len</span>(intent_words & <span class="code-func">set</span>(product[<span class="code-str">"category"</span>].lower().split())) * <span class="code-keyword">2.0</span>
+    desc_matches = <span class="code-func">len</span>(intent_words & <span class="code-func">set</span>(product[<span class="code-str">"description"</span>].lower().split())) * <span class="code-keyword">1.0</span>
+    <span class="code-keyword">return</span> name_matches + cat_matches + desc_matches
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Anti-Hacking Guardrails & HITL -->
+        <div class="slide" id="slide-2">
+            <div class="slide-tag">Segment 3 • 1:45 - 2:45</div>
+            <h1 class="slide-title">Anti-Hacking Guardrails & Tiered Approvals</h1>
+            <div class="grid-2">
+                <div class="card-box">
+                    <ul class="feature-list">
+                        <li class="feature-item">
+                            <span class="feature-icon">🛑</span>
+                            <div><b>Prompt Injection Shield:</b> Halts adversarial inputs like <i>"ignore previous instructions"</i> at the server level.</div>
+                        </li>
+                        <li class="feature-item">
+                            <span class="feature-icon">🏪</span>
+                            <div><b>Merchant Verification Gate:</b> Automatically blocks unverified sellers and suspicious discounts (>20%).</div>
+                        </li>
+                        <li class="feature-item">
+                            <span class="feature-icon">⚖️</span>
+                            <div><b>3-Tiered Financial Approvals:</b>
+                                <br><small style="color: #34D399;">• Tier 1 (&lt; ₹1,000): Instant Auto-Approve</small>
+                                <br><small style="color: #38BDF8;">• Tier 2 (₹1k–₹5k): Auto-Approve with Logged Notification</small>
+                                <br><small style="color: #FDE047;">• Tier 3 (&gt; ₹5,000): Explicit Human Confirmation (HITL)</small>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="code-snippet">
+<span class="code-comment"># Financial & Security Policy Gates</span>
+<span class="code-keyword">def</span> <span class="code-func">check_guardrails</span>(order_value, discount, verified, intent):
+    <span class="code-keyword">for</span> pattern <span class="code-keyword">in</span> INJECTION_PATTERNS:
+        <span class="code-keyword">if</span> re.search(pattern, intent, re.IGNORECASE):
+            <span class="code-keyword">return</span> <span class="code-keyword">False</span>, [<span class="code-str">"Prompt injection blocked"</span>], <span class="code-str">"BLOCKED"</span>
+    <span class="code-keyword">if</span> <span class="code-keyword">not</span> verified:
+        <span class="code-keyword">return</span> <span class="code-keyword">False</span>, [<span class="code-str">"Unverified merchant"</span>], <span class="code-str">"BLOCKED"</span>
+    <span class="code-keyword">if</span> order_value > <span class="code-keyword">5000</span>:
+        <span class="code-keyword">return</span> <span class="code-keyword">True</span>, [<span class="code-str">"High value HITL required"</span>], <span class="code-str">"TIER_3_HITL"</span>
+    <span class="code-keyword">return</span> <span class="code-keyword">True</span>, [<span class="code-str">"Auto-approved"</span>], <span class="code-str">"TIER_2_NOTIFY"</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Razorpay & Webhook Cryptography -->
+        <div class="slide" id="slide-3">
+            <div class="slide-tag">Segment 4 • 2:45 - 3:45</div>
+            <h1 class="slide-title">Razorpay Checkout & Anti-Tamper Webhooks</h1>
+            <div class="grid-2">
+                <div class="card-box">
+                    <ul class="feature-list">
+                        <li class="feature-item">
+                            <span class="feature-icon">💳</span>
+                            <div><b>Integrated Razorpay Checkout:</b> Embedded payment flow supporting UPI (GPay/PhonePe), Cards, and Net Banking.</div>
+                        </li>
+                        <li class="feature-item">
+                            <span class="feature-icon">🔐</span>
+                            <div><b>HMAC-SHA256 Signature Verification:</b> Cryptographically verifies every webhook from Razorpay before fulfilling orders.</div>
+                        </li>
+                        <li class="feature-item">
+                            <span class="feature-icon">🚨</span>
+                            <div><b>Tamper Attack Simulation:</b> Demonstrates immediate rejection if an attacker modifies the payment payload from ₹12,499 to ₹1.</div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="code-snippet">
+<span class="code-comment"># Cryptographic Webhook Anti-Tamper Verification</span>
+<span class="code-keyword">def</span> <span class="code-func">verify_webhook_signature</span>(payload_body, signature, secret):
+    generated_sig = hmac.new(
+        secret.encode(<span class="code-str">"utf-8"</span>),
+        payload_body.encode(<span class="code-str">"utf-8"</span>),
+        hashlib.sha256
+    ).hexdigest()
+    <span class="code-keyword">return</span> hmac.compare_digest(generated_sig, signature)
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Audit Ledger & Summary -->
+        <div class="slide" id="slide-4">
+            <div class="slide-tag">Segment 5 • 3:45 - 4:30</div>
+            <h1 class="slide-title">Merchant Audit Ledger & Production Readiness</h1>
+            <div class="grid-2">
+                <div class="card-box">
+                    <ul class="feature-list">
+                        <li class="feature-item">
+                            <span class="feature-icon">📋</span>
+                            <div><b>Immutable Audit Trail:</b> Persistent SQLite logging for every query, risk score, order, and webhook.</div>
+                        </li>
+                        <li class="feature-item">
+                            <span class="feature-icon">⚙️</span>
+                            <div><b>Live Merchant Controls:</b> Real-time sliders for spending limits, discount caps, and daily budgets.</div>
+                        </li>
+                        <li class="feature-item">
+                            <span class="feature-icon">🏆</span>
+                            <div><b>Production Ready:</b> Modular FastAPI architecture ready to connect to live inventory databases and mobile applications.</div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-box" style="text-align: center; padding: 40px 20px;">
+                    <div style="font-size: 52px; margin-bottom: 12px;">✅ 🛡️ 🚀</div>
+                    <h2 style="color: var(--accent-green); margin-bottom: 8px;">Autonomous. Secure. Gated.</h2>
+                    <p style="color: var(--text-muted); font-size: 14px;">The Future of Agentic Commerce on Razorpay</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Bottom Controls & Voice Teleprompter -->
+    <div class="controls">
+        <div style="display: flex; gap: 12px;">
+            <button class="btn" id="play-btn" onclick="togglePresentation()">
+                <span id="play-icon">▶️</span> <span id="play-text">Play Pitch Video</span>
+            </button>
+            <button class="btn btn-secondary" onclick="prevSlide()">⏮️ Prev</button>
+            <button class="btn btn-secondary" onclick="nextSlide()">Next ⏭️</button>
+        </div>
+        <div class="teleprompter" id="teleprompter">Click "Play Pitch Video" to start the automated walkthrough...</div>
+        <div style="font-size: 12px; color: var(--text-muted);">Press <b>Win + G</b> to record screen</div>
+    </div>
+
+    <script>
+        const slides = document.querySelectorAll('.slide');
+        const dots = document.querySelectorAll('.track-dot');
+        const teleprompter = document.getElementById('teleprompter');
+        const progressBar = document.getElementById('progress-bar');
+        const timeDisplay = document.getElementById('time-display');
+
+        let currentSlide = 0;
+        let isPlaying = false;
+        let slideTimer = null;
+        let progressTimer = null;
+        let elapsedSeconds = 0;
+        const totalDuration = 270; // 4 minutes 30 seconds
+
+        const narrations = [
+            "Welcome to RPay Agentic Commerce. E-commerce is shifting from manual search to autonomous AI buyer agents. Our platform provides a voice-first storefront with ironclad guardrails and Razorpay financial compliance.",
+            "Users interact seamlessly through an Alexa-inspired voice assistant. When a query is spoken, our semantic search engine extracts budgets, matches descriptions, and explains every pick with transparent reasoning.",
+            "Security is enforced at the API layer. Prompt injection attacks are halted instantly, unverified merchants are blocked, and high-value purchases over 5,000 rupees require explicit Human-in-the-Loop authorization.",
+            "Once approved, orders flow into an integrated Razorpay checkout. Post-payment, our system cryptographically validates webhook signatures using HMAC-SHA256 to prevent payload tampering attacks.",
+            "Every single transaction, safety score, and webhook event is recorded in a persistent SQLite audit ledger. RPay proves that autonomous AI commerce can be safe, explainable, and production-ready."
+        ];
+
+        const slideDurations = [45, 60, 60, 60, 45]; // Durations in seconds
+
+        function updateSlideUI() {
+            slides.forEach((s, idx) => s.classList.toggle('active', idx === currentSlide));
+            dots.forEach((d, idx) => d.classList.toggle('active', idx === currentSlide));
+            teleprompter.textContent = narrations[currentSlide];
+
+            if (isPlaying && 'speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(narrations[currentSlide]);
+                utterance.rate = 1.0;
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        function nextSlide() {
+            if (currentSlide < slides.length - 1) {
+                currentSlide++;
+                updateSlideUI();
+            } else {
+                stopPresentation();
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                currentSlide--;
+                updateSlideUI();
+            }
+        }
+
+        function togglePresentation() {
+            if (isPlaying) {
+                stopPresentation();
+            } else {
+                startPresentation();
+            }
+        }
+
+        function startPresentation() {
+            isPlaying = true;
+            document.getElementById('play-icon').textContent = '⏸️';
+            document.getElementById('play-text').textContent = 'Pause Pitch';
+            updateSlideUI();
+
+            progressTimer = setInterval(() => {
+                elapsedSeconds++;
+                const mins = Math.floor(elapsedSeconds / 60);
+                const secs = elapsedSeconds % 60;
+                timeDisplay.textContent = `${mins}:${secs < 10 ? '0' : ''}${secs} / 4:30`;
+                progressBar.style.width = `${(elapsedSeconds / totalDuration) * 100}%`;
+
+                if (elapsedSeconds >= totalDuration) {
+                    stopPresentation();
+                }
+            }, 1000);
+
+            let currentSlideDuration = slideDurations[currentSlide];
+            slideTimer = setTimeout(advanceSlideAuto, currentSlideDuration * 1000);
+        }
+
+        function advanceSlideAuto() {
+            if (currentSlide < slides.length - 1) {
+                nextSlide();
+                let currentSlideDuration = slideDurations[currentSlide];
+                slideTimer = setTimeout(advanceSlideAuto, currentSlideDuration * 1000);
+            } else {
+                stopPresentation();
+            }
+        }
+
+        function stopPresentation() {
+            isPlaying = false;
+            clearTimeout(slideTimer);
+            clearInterval(progressTimer);
+            if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+            document.getElementById('play-icon').textContent = '▶️';
+            document.getElementById('play-text').textContent = 'Play Pitch Video';
+        }
+    </script>
+</body>
+</html>
